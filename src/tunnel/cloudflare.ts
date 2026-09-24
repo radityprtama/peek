@@ -19,6 +19,7 @@ function launchCloudflared(binaryPath: string, args: string[]): TunnelChild {
   const child = execa(binaryPath, args, {
     stdout: 'pipe',
     stderr: 'pipe',
+    buffer: false,
     reject: false,
     killDescendants: true,
     cleanup: true,
@@ -150,17 +151,27 @@ export class CloudflareProvider implements TunnelProvider {
 
   async disconnect(): Promise<void> {
     const child = this.child
-    this.child = undefined
     if (!child) return
-    child.kill('SIGTERM')
-    const stopped = await Promise.race([
-      child.exit.then(() => true),
-      delay(3_000).then(() => false),
-    ])
-    if (!stopped) {
-      child.kill('SIGKILL')
-      await Promise.race([child.exit, delay(1_000)])
+    try {
+      child.kill('SIGTERM')
+      const stopped = await Promise.race([
+        child.exit.then(() => true),
+        delay(3_000, undefined, { ref: false }).then(() => false),
+      ])
+      if (!stopped) {
+        child.kill('SIGKILL')
+        await Promise.race([
+          child.exit,
+          delay(1_000, undefined, { ref: false }),
+        ])
+      }
+    } finally {
+      if (this.child === child) this.child = undefined
     }
+  }
+
+  forceDisconnect(): void {
+    this.child?.kill('SIGKILL')
   }
 
   private exitError(result: TunnelExit): PeekError {

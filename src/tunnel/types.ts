@@ -14,4 +14,5 @@ export interface TunnelProvider {
     signal: AbortSignal
   }): Promise<TunnelConnection>
   disconnect(): Promise<void>
+  forceDisconnect?(): void
 }
