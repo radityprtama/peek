@@ -15,6 +15,7 @@ export function parsePort(value: string): number {
 }
 
 export function extractLocalPorts(line: string): number[] {
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI CSI starts with ESC in framework output.
   const clean = line.replace(/\x1b\[[0-9;]*m/g, '')
   if (/\bmetrics?\b/i.test(clean) && /\/metrics\b/i.test(clean)) return []
 
