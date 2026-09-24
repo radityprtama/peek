@@ -2,7 +2,11 @@ import type { TunnelProvider } from '../tunnel/types.js'
 import { PeekError } from '../utils/errors.js'
 import type { DevCommand } from './dev-command.js'
 import type { Lifecycle } from './lifecycle.js'
-import { type ProcessExit, spawnDev } from './process.js'
+import {
+  isMissingWindowsCommand,
+  type ProcessExit,
+  spawnDev,
+} from './process.js'
 import {
   captureBaselinePorts,
   inspectChildListeningPorts,
@@ -65,7 +69,10 @@ export async function runPeek(options: RunOptions): Promise<void> {
       if (
         error instanceof PeekError &&
         error.code === 'SERVER_START_ERROR' &&
-        devExit?.spawnFailed
+        devExit &&
+        (devExit.spawnFailed ||
+          (devExit.failed &&
+            (await isMissingWindowsCommand(command.file, cwd))))
       ) {
         throw new PeekError(
           'PACKAGE_MANAGER_ERROR',

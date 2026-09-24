@@ -54,3 +54,18 @@ export function spawnDev(command: DevCommand, cwd: string): DevProcess {
     },
   }
 }
+
+export async function isMissingWindowsCommand(
+  file: string,
+  cwd: string,
+): Promise<boolean> {
+  if (process.platform !== 'win32' || /[\\/:]/.test(file)) return false
+  const result = await execa('where.exe', [file], {
+    cwd,
+    stdout: 'ignore',
+    stderr: 'ignore',
+    reject: false,
+    timeout: 1_000,
+  })
+  return result.exitCode === 1 && result.code === undefined
+}
