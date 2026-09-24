@@ -19,8 +19,9 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '24'
-          registry-url: https://registry.npmjs.org
           package-manager-cache: false
+      # registry-url creates an empty NODE_AUTH_TOKEN entry that can mask OIDC.
+      - run: npm install --global npm@11.19.0
       - name: Verify tag matches package version
         run: node -e "if (process.env.GITHUB_REF_NAME !== 'v' + require('./package.json').version) process.exit(1)"
       - run: pnpm install --frozen-lockfile
