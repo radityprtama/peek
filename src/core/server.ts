@@ -84,14 +84,37 @@ export async function waitForServer(
     }
 
     if (explicitPort !== undefined) {
-      if (await probePort(explicitPort, signal)) return explicitPort
+      if (await probePort(explicitPort, signal)) {
+        const owned = await inspectPorts()
+        signal.throwIfAborted()
+        if (owned.length > 0 && !owned.includes(explicitPort)) {
+          throw new PeekError(
+            'SERVER_DETECTION_ERROR',
+            `Port ${explicitPort} is reachable but does not belong to the dev process.`,
+            'Choose the port opened by this dev server or check for another local service.',
+          )
+        }
+        return explicitPort
+      }
     } else {
       const outputPorts = signals
         .getPorts()
         .filter((port) => !baselineOpen.has(port))
       const outputReady = await readyPorts(outputPorts, signal)
       if (outputReady.length > 1) throw ambiguousPorts(outputReady)
-      if (outputReady[0] !== undefined) return outputReady[0]
+      if (outputReady[0] !== undefined) {
+        const selected = outputReady[0]
+        const owned = await inspectPorts()
+        signal.throwIfAborted()
+        if (owned.length > 0 && !owned.includes(selected)) {
+          throw new PeekError(
+            'SERVER_DETECTION_ERROR',
+            `The announced port ${selected} does not belong to the dev process.`,
+            'Check the dev server output and select its port with --port <number>.',
+          )
+        }
+        return selected
+      }
 
       // Once a dev process announces a port, a concurrent listener must not
       // displace it just because that other listener becomes ready first.

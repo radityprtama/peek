@@ -95,6 +95,20 @@ it('does not connect a tunnel when the dev server crashes', async () => {
   expect(lifecycle.isStopped).toBe(true)
 })
 
+it('identifies an unavailable dev command', async () => {
+  const lifecycle = new Lifecycle()
+  lifecycles.push(lifecycle)
+  await expect(
+    runPeek({
+      cwd: process.cwd(),
+      command: { file: 'peek-command-that-does-not-exist', args: [] },
+      lifecycle,
+      provider: fakeProvider(),
+      onDevOutput: () => {},
+    }),
+  ).rejects.toMatchObject({ code: 'PACKAGE_MANAGER_ERROR' })
+})
+
 it('stops a hung server during readiness', async () => {
   const lifecycle = new Lifecycle()
   lifecycles.push(lifecycle)

@@ -2,7 +2,7 @@ import type { TunnelProvider } from '../tunnel/types.js'
 import { PeekError } from '../utils/errors.js'
 import type { DevCommand } from './dev-command.js'
 import type { Lifecycle } from './lifecycle.js'
-import { spawnDev } from './process.js'
+import { type ProcessExit, spawnDev } from './process.js'
 import {
   captureBaselinePorts,
   inspectChildListeningPorts,
@@ -43,19 +43,38 @@ export async function runPeek(options: RunOptions): Promise<void> {
       options.onDevOutput?.('stderr', text)
     })
     let devExited = false
-    void dev.exit.then(() => {
+    let devExit: ProcessExit | undefined
+    void dev.exit.then((exit) => {
       devExited = true
+      devExit = exit
     })
 
     options.onState?.('waiting')
-    const port = await waitForServer({
-      ...(explicitPort === undefined ? {} : { explicitPort }),
-      signals,
-      baselineOpen,
-      signal,
-      hasExited: () => devExited,
-      inspectPorts: () => inspectChildListeningPorts(dev.pid),
-    })
+    let port: number
+    try {
+      port = await waitForServer({
+        ...(explicitPort === undefined ? {} : { explicitPort }),
+        signals,
+        baselineOpen,
+        signal,
+        hasExited: () => devExited,
+        inspectPorts: () => inspectChildListeningPorts(dev.pid),
+      })
+    } catch (error) {
+      if (
+        error instanceof PeekError &&
+        error.code === 'SERVER_START_ERROR' &&
+        /ENOENT|EACCES/.test(devExit?.message ?? '')
+      ) {
+        throw new PeekError(
+          'PACKAGE_MANAGER_ERROR',
+          `Peek could not start ${command.file}.`,
+          `Install ${command.file} or run an available command with peek -- <command>.`,
+          devExit?.message,
+        )
+      }
+      throw error
+    }
     signal.throwIfAborted()
     options.onState?.('connecting')
     lifecycle.setProvider(provider)

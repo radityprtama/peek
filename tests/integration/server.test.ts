@@ -76,3 +76,20 @@ it('rejects two reachable output candidates', async () => {
     }),
   ).rejects.toMatchObject({ code: 'SERVER_DETECTION_ERROR' })
 })
+
+it('rejects an announced port when the child owns a different listener', async () => {
+  const port = await listen()
+  const signals = new PortSignals()
+  signals.addChunk(`Local: http://localhost:${port}\n`)
+  await expect(
+    waitForServer({
+      signals,
+      baselineOpen: new Set(),
+      signal: new AbortController().signal,
+      hasExited: () => false,
+      inspectPorts: async () => [port + 1],
+      commonPorts: [],
+      timeoutMs: 1000,
+    }),
+  ).rejects.toMatchObject({ code: 'SERVER_DETECTION_ERROR' })
+})
