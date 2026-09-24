@@ -65,7 +65,7 @@ export async function runPeek(options: RunOptions): Promise<void> {
       if (
         error instanceof PeekError &&
         error.code === 'SERVER_START_ERROR' &&
-        /ENOENT|EACCES/.test(devExit?.message ?? '')
+        devExit?.spawnFailed
       ) {
         throw new PeekError(
           'PACKAGE_MANAGER_ERROR',

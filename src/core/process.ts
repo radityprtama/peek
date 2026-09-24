@@ -5,6 +5,7 @@ import type { DevCommand } from './dev-command.js'
 export interface ProcessExit {
   exitCode: number | null
   failed: boolean
+  spawnFailed: boolean
   message?: string
 }
 
@@ -39,6 +40,12 @@ export function spawnDev(command: DevCommand, cwd: string): DevProcess {
       (result): ProcessExit => ({
         exitCode: result.exitCode ?? null,
         failed: result.failed,
+        spawnFailed:
+          result.failed &&
+          result.exitCode === undefined &&
+          result.signal === undefined &&
+          !result.timedOut &&
+          !result.isCanceled,
         ...(result.shortMessage ? { message: result.shortMessage } : {}),
       }),
     ),
