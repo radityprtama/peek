@@ -1,0 +1,111 @@
+# Development
+
+Peek is one Node.js package. Node.js 22+ and pnpm 11.20.0 are used for local
+development. Enable pnpm with Corepack if it is not already available.
+
+```sh
+git clone https://github.com/radityprtama/peek.git
+cd peek
+corepack enable
+pnpm install
+pnpm dev
+```
+
+`pnpm dev` rebuilds the CLI on source changes. In another terminal, use these
+checks:
+
+```sh
+pnpm test
+pnpm lint
+pnpm typecheck
+pnpm build
+pnpm pack:check
+pnpm smoke:pack
+```
+
+The last command packs the publishable files, installs that tarball in a
+temporary directory, checks `peek --version` and `peek --help`, then removes
+the directory. It does not start a public tunnel.
+
+## Structure
+
+`src/cli.ts` parses arguments and presents errors. `src/core` discovers the
+project, runs the dev process, detects and verifies its port, and owns process
+cleanup. `src/cloudflared` downloads and verifies the pinned binary. `src/tunnel`
+contains the provider contract and Cloudflare implementation. `src/ui` formats
+terminal output. `tests/unit` covers parsers and decisions; `tests/integration`
+uses tiny fake server and tunnel processes to test readiness and lifecycle.
+See [architecture](ARCHITECTURE.md) and [decisions](DECISIONS.md) for details.
+
+## Try the CLI locally
+
+After `pnpm build`, run `node dist/cli.js --help`. To expose the local CLI as
+`peek` on your PATH, run `npm link` from the repository, then `peek --version`.
+Remove the link with `npm uninstall -g @radityprtama/peek` when finished. pnpm
+v11 no longer supports `pnpm link --global`. You can also avoid linking:
+
+```sh
+cd /path/to/a/project-with-a-dev-script
+node /path/to/peek/dist/cli.js
+```
+
+The normal tests never connect to Cloudflare. To test the real integration,
+run Peek from a disposable dev project, wait for both URLs, request the public
+URL from a second device or `curl`, and press Ctrl+C. Check that the dev server
+and `cloudflared` have exited. The first run downloads the pinned binary to
+`~/.peek/bin`; subsequent runs reuse it. Do not share a project containing
+private data unless its HTTP routes protect that data.
+
+## Release
+
+Before tagging, update the package version and changelog together. Run all
+checks above, inspect `npm pack --dry-run`, and manually test one real Quick
+Tunnel. The `v<package version>` tag (for example `v0.1.0`) triggers
+`.github/workflows/release.yml`, which rechecks the package and publishes to
+npm with provenance using GitHub OIDC. The package name is
+`@radityprtama/peek` and the intended repository is
+`radityprtama/peek`.
+
+Because npm requires a package to exist before trust can be configured, the
+owner must first publish a minimal prerelease under this name from an isolated
+directory. Do this only after confirming ownership of the npm scope and the
+release contents. For example, publish a small `0.0.0-bootstrap.0` package
+with no executable or dependencies under the `bootstrap` dist-tag. Keep the
+actual Peek source tree at `0.1.0` throughout. The bootstrap version exists
+only to establish package ownership and enable trusted publishing; `v0.1.0`
+will be published by the workflow and become the normal release.
+
+```sh
+bootstrap_dir="$(mktemp -d)"
+cd "$bootstrap_dir"
+cat > package.json <<'JSON'
+{
+  "name": "@radityprtama/peek",
+  "version": "0.0.0-bootstrap.0",
+  "description": "Bootstrap for Peek's trusted npm publisher",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/radityprtama/peek.git"
+  }
+}
+JSON
+printf '%s\n' 'Peek bootstrap package. Install 0.1.0 when released.' > README.md
+npm pack --dry-run
+npm publish --access public --tag bootstrap
+```
+
+Then configure the npm trusted publisher for owner `radityprtama`, repository
+`peek`, workflow filename `release.yml`, and **allow direct `npm publish`**.
+The CLI equivalent, using npm 11.15.0+ from an authenticated account with 2FA,
+is:
+
+```sh
+npm trust github @radityprtama/peek --repo radityprtama/peek --file release.yml --allow-publish
+```
+
+The GitHub repository must be public for npm provenance. Verify the trust
+entry before pushing the `v0.1.0` tag. See [npm's trusted publisher
+instructions](https://docs.npmjs.com/trusted-publishers/) and the
+[npm trust command](https://docs.npmjs.com/cli/v11/commands/npm-trust).
+Do not store an npm token in GitHub Actions.
