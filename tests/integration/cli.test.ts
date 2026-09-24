@@ -8,7 +8,10 @@ const root = fileURLToPath(new URL('../../', import.meta.url))
 const cliFile = fileURLToPath(new URL('../../dist/cli.js', import.meta.url))
 
 beforeAll(async () => {
-  await execFileAsync('pnpm', ['build'], { cwd: root })
+  await execFileAsync('pnpm', ['build'], {
+    cwd: root,
+    shell: process.platform === 'win32',
+  })
 })
 
 async function run(args: string[]): Promise<{ code: number; output: string }> {
@@ -34,7 +37,10 @@ async function run(args: string[]): Promise<{ code: number; output: string }> {
 it('shows help without starting a tunnel', async () => {
   const result = await run(['--help'])
   expect(result.code).toBe(0)
-  expect(result.output).toContain('peek')
+  expect(result.output).toContain('peek dev')
+  expect(result.output).toContain('peek -- pnpm dev')
+  expect(result.output).toContain('--no-qr')
+  expect(result.output).toContain('--version')
 })
 
 it('shows the package version', async () => {

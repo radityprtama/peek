@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { defineCommand, runMain } from 'citty'
+import { defineCommand, renderUsage, runMain } from 'citty'
 import packageJson from '../package.json' with { type: 'json' }
 import { ensureCloudflared } from './cloudflared/binary.js'
 import {
@@ -29,7 +29,11 @@ const flags = {
     description: 'Port opened by the development server',
   },
   provider: { type: 'string', description: 'Tunnel provider (cloudflare)' },
-  qr: { type: 'boolean', description: 'Show a terminal QR code when it fits' },
+  qr: {
+    type: 'boolean',
+    description: 'Show a terminal QR code when it fits',
+    negativeDescription: 'Do not show a terminal QR code',
+  },
   verbose: { type: 'boolean', description: 'Show diagnostic details' },
 } as const
 
@@ -123,6 +127,7 @@ async function execute(args: CliArgs): Promise<void> {
         }
       },
       onDevOutput: (stream, text) => output.childOutput(stream, text),
+      onServerReady: (port) => output.success(`Server ready on :${port}`),
       onReady: ({ localUrl, publicUrl }) => output.ready(localUrl, publicUrl),
     })
     if (lifecycle.signalExitCode !== undefined)
@@ -144,11 +149,25 @@ const main = defineCommand({
   meta: {
     name: 'peek',
     version: packageJson.version,
-    description:
-      'Run your dev server. Share it instantly. (peek dev is an alias)',
+    description: 'Run your dev server. Share it instantly.',
   },
   args: flags,
   run: ({ args }) => execute(args),
 })
 
-await runMain(main, { rawArgs: commandArgs })
+await runMain(main, {
+  rawArgs: commandArgs,
+  showUsage: async (command, parent) => {
+    const usage = await renderUsage(command, parent)
+    process.stdout.write(
+      `${usage}\n` +
+        'COMMANDS\n' +
+        '  peek                     Run the detected dev script\n' +
+        '  peek dev                 Same as peek\n' +
+        '  peek -- pnpm dev         Run an explicit command\n\n' +
+        '  --help                   Show this help\n' +
+        '  --version                Show the version\n' +
+        '  Flags go before --. Docs: https://github.com/radityprtama/peek\n',
+    )
+  },
+})

@@ -77,3 +77,15 @@ it('reports an early tunnel exit', async () => {
     code: 'TUNNEL_CONNECTION_ERROR',
   })
 })
+
+it('stops tunnel startup when cancelled', async () => {
+  const fake = fakeChild()
+  const controller = new AbortController()
+  const provider = new CloudflareProvider('/tmp/cloudflared', () => fake.child)
+  const connecting = provider.connect({ port: 3000, signal: controller.signal })
+  controller.abort()
+  await expect(connecting).rejects.toThrow()
+  expect(fake.kill).toHaveBeenCalledWith('SIGTERM')
+  fake.exit(0)
+  await provider.disconnect()
+})

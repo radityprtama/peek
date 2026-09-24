@@ -90,7 +90,10 @@ it('does not connect a tunnel when the dev server crashes', async () => {
       provider,
       onDevOutput: () => {},
     }),
-  ).rejects.toMatchObject({ code: 'SERVER_START_ERROR' })
+  ).rejects.toMatchObject({
+    code: 'SERVER_START_ERROR',
+    message: 'Development server exited with code 1 before becoming ready.',
+  })
   expect(connect).not.toHaveBeenCalled()
   expect(lifecycle.isStopped).toBe(true)
 })

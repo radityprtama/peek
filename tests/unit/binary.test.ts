@@ -62,3 +62,38 @@ it('rejects an asset whose checksum is wrong', async () => {
     code: 'CLOUDFLARED_INSTALL_ERROR',
   })
 })
+
+it('does not fetch after cancellation', async () => {
+  const controller = new AbortController()
+  controller.abort()
+  const bytes = Buffer.from('known binary')
+  const fetcher = vi.fn(async () => new Response(bytes, { status: 200 }))
+  await expect(
+    ensureCloudflared({
+      cacheDir: await cache(),
+      asset: fakeAsset(bytes),
+      fetcher,
+      signal: controller.signal,
+    }),
+  ).rejects.toMatchObject({ code: 'CLOUDFLARED_INSTALL_ERROR' })
+  expect(fetcher).not.toHaveBeenCalled()
+})
+
+it('rejects redirects outside trusted HTTPS hosts', async () => {
+  const bytes = Buffer.from('known binary')
+  const fetcher = vi.fn(
+    async () =>
+      new Response(null, {
+        status: 302,
+        headers: { location: 'https://example.org/cloudflared' },
+      }),
+  )
+  await expect(
+    ensureCloudflared({
+      cacheDir: await cache(),
+      asset: fakeAsset(bytes),
+      fetcher,
+    }),
+  ).rejects.toMatchObject({ code: 'CLOUDFLARED_INSTALL_ERROR' })
+  expect(fetcher).toHaveBeenCalledTimes(1)
+})

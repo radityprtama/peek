@@ -18,6 +18,7 @@ export interface RunOptions {
   provider: TunnelProvider
   onState?: (state: 'starting' | 'waiting' | 'connecting') => void
   onDevOutput?: (stream: 'stdout' | 'stderr', text: string) => void
+  onServerReady?: (port: number) => void
   onReady?: (urls: { localUrl: string; publicUrl: string }) => void
 }
 
@@ -73,9 +74,22 @@ export async function runPeek(options: RunOptions): Promise<void> {
           devExit?.message,
         )
       }
+      if (
+        error instanceof PeekError &&
+        error.code === 'SERVER_START_ERROR' &&
+        devExit
+      ) {
+        throw new PeekError(
+          'SERVER_START_ERROR',
+          `Development server exited with code ${devExit.exitCode ?? 'unknown'} before becoming ready.`,
+          'Check the dev server output above and fix its startup error.',
+          devExit.message,
+        )
+      }
       throw error
     }
     signal.throwIfAborted()
+    options.onServerReady?.(port)
     options.onState?.('connecting')
     lifecycle.setProvider(provider)
     const connection = await provider.connect({ port, signal })

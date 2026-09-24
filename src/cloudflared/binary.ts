@@ -77,7 +77,22 @@ export async function ensureCloudflared(
       throw new Error(`Executable SHA-256 mismatch for ${asset.name}`)
     }
     if (platform !== 'win32') await chmod(temporaryBinary, 0o700)
-    await rename(temporaryBinary, binaryPath)
+    try {
+      await rename(temporaryBinary, binaryPath)
+    } catch (cause) {
+      // Windows does not replace an existing cache file with rename. A peer
+      // may also have completed the same verified download first.
+      if (await validCachedBinary(binaryPath, asset.binarySha256))
+        return binaryPath
+      await rm(binaryPath, { force: true })
+      try {
+        await rename(temporaryBinary, binaryPath)
+      } catch {
+        if (await validCachedBinary(binaryPath, asset.binarySha256))
+          return binaryPath
+        throw cause
+      }
+    }
     return binaryPath
   } catch (cause) {
     if (cause instanceof PeekError) throw cause
