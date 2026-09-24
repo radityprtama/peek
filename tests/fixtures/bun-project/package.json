@@ -1,0 +1,7 @@
+{
+  "name": "bun-fixture",
+  "private": true,
+  "scripts": {
+    "dev": "vite"
+  }
+}

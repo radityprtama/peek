@@ -1,0 +1,8 @@
+{
+  "name": "pnpm-fixture",
+  "private": true,
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "dev": "vite"
+  }
+}

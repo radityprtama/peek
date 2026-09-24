@@ -1,0 +1,7 @@
+{
+  "name": "yarn-fixture",
+  "private": true,
+  "scripts": {
+    "dev": "vite"
+  }
+}

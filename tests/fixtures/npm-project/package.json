@@ -1,0 +1,7 @@
+{
+  "name": "npm-fixture",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js"
+  }
+}
