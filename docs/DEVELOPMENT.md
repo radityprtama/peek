@@ -72,12 +72,14 @@ in `package.json` matches the tag and is absent from the registry before
 pushing it.
 
 Configure the npm trusted publisher for owner `radityprtama`, repository
-`peek`, workflow filename `release.yml`, and **allow direct `npm publish`**.
+`peek`, workflow filename `release.yml`, environment `Publish to npm`, and
+**allow direct `npm publish`**. The environment must match the release job's
+`environment` field exactly.
 The CLI equivalent, using npm 11.15.0+ from an authenticated account with 2FA,
 is:
 
 ```sh
-npm trust github @radityprtama/peek --repo radityprtama/peek --file release.yml --allow-publish
+npm trust github @radityprtama/peek --repo radityprtama/peek --file release.yml --env 'Publish to npm' --allow-publish
 ```
 
 The GitHub repository must be public for npm provenance. Verify the trust
