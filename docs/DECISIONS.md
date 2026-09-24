@@ -83,3 +83,14 @@ executable digests, while GitHub asset metadata lists the `.tgz` digests.
 **Why:** Tokens after `--` map directly to an executable and arguments through
 Execa. A string form would require shell-style parsing or shell execution,
 which adds ambiguity and injection risk.
+
+## 9. Windows command availability
+
+**Decision:** On Windows, an early failed dev process is checked with
+`which-command` before calling it a missing package manager or executable.
+
+**Why:** Execa can use `cmd.exe` to launch Windows commands. An unresolved
+command may therefore exit with code 1, just like a dev server that crashed.
+`which-command` is the same small resolver Execa uses internally and handles
+Windows `PATHEXT`. The check runs only after a failed startup, so normal starts
+do not pay for it.

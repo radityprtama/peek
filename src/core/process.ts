@@ -1,5 +1,6 @@
 import type { Readable } from 'node:stream'
 import { execa } from 'execa'
+import { whichCommand } from 'which-command'
 import type { DevCommand } from './dev-command.js'
 
 export interface ProcessExit {
@@ -59,13 +60,8 @@ export async function isMissingWindowsCommand(
   file: string,
   cwd: string,
 ): Promise<boolean> {
-  if (process.platform !== 'win32' || /[\\/:]/.test(file)) return false
-  const result = await execa('where.exe', [file], {
-    cwd,
-    stdout: 'ignore',
-    stderr: 'ignore',
-    reject: false,
-    timeout: 1_000,
-  })
-  return result.exitCode === 1 && result.code === undefined
+  if (process.platform !== 'win32') return false
+  // Execa uses cmd.exe for unresolved Windows commands, which can turn a
+  // missing executable into exit code 1. Use the same resolver Execa uses.
+  return (await whichCommand(file, { cwd })) === undefined
 }
