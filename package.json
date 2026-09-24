@@ -1,0 +1,49 @@
+{
+  "name": "@radityprtama/peek",
+  "version": "0.1.0",
+  "description": "Run your dev server. Share it instantly.",
+  "type": "module",
+  "bin": {
+    "peek": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@11.20.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "typecheck": "tsc --noEmit",
+    "build": "tsdown",
+    "pack:check": "npm pack --dry-run",
+    "prepack": "pnpm build"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "citty": "^0.2.2",
+    "consola": "^3.4.2",
+    "execa": "^10.0.1",
+    "package-manager-detector": "^1.8.0",
+    "picocolors": "^1.1.1",
+    "qrcode-terminal": "^0.12.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "@types/node": "^22.20.4",
+    "@types/qrcode-terminal": "^0.12.2",
+    "tsdown": "^0.23.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.1"
+  }
+}
