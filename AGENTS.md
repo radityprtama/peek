@@ -70,8 +70,7 @@ Update `CHANGELOG.md` and package version together. Verify every pinned
 Cloudflare asset digest against the official release if changing the binary
 version. Run the local gate and inspect `npm pack --dry-run`. The tag release
 workflow checks the tag matches package version and publishes with npm
-provenance. npm requires an existing package before trusted publishing can be
-configured: the owner must first publish a minimal bootstrap prerelease from
-an isolated directory, then authorize direct `npm publish` for the exact
-GitHub repository and `release.yml` before tagging `v0.1.0`. See
+provenance. `0.1.0` is already published; never reuse a published npm version.
+Verify that direct `npm publish` is authorized for the exact GitHub repository
+and `release.yml` before tagging `v<package version>`. See
 `docs/DEVELOPMENT.md`. Never place an npm token in this repository.

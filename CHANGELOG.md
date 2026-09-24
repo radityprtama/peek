@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 — 2026-09-24
+
+- Release Peek under a new npm version after `0.1.0` was already published.
+- Normalize the executable path in package metadata and verify the installed
+  `peek` command in the package smoke test.
+
 ## 0.1.0 — 2026-09-24
 
 - Start a local `dev` script with pnpm, npm, Yarn, or Bun, or run an explicit

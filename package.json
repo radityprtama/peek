@@ -1,6 +1,6 @@
 {
   "name": "@radityprtama/peek",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Run your dev server. Share it instantly.",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
   },
   "type": "module",
   "bin": {
-    "peek": "./dist/cli.js"
+    "peek": "dist/cli.js"
   },
   "files": [
     "dist",

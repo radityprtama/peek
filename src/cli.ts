@@ -72,7 +72,7 @@ async function execute(args: CliArgs): Promise<void> {
     if (args.provider !== undefined && args.provider !== 'cloudflare') {
       throw new PeekError(
         'USAGE_ERROR',
-        `Provider ${JSON.stringify(args.provider)} is not available in Peek v0.1.0.`,
+        `Provider ${JSON.stringify(args.provider)} is not available in Peek v${packageJson.version}.`,
         'Use --provider cloudflare or omit the flag.',
       )
     }

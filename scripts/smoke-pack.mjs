@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process'
-import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
+import { access, mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -43,19 +43,25 @@ try {
     '--no-fund',
     join(temporary, tarballs[0]),
   ])
-  const cli = join(
+  const packageRoot = join(installDir, 'node_modules', '@radityprtama', 'peek')
+  const installedPackage = JSON.parse(
+    await readFile(join(packageRoot, 'package.json'), 'utf8'),
+  )
+  if (installedPackage.bin?.peek !== 'dist/cli.js') {
+    throw new Error('Installed package has no valid peek bin entry')
+  }
+  const bin = join(
     installDir,
     'node_modules',
-    '@radityprtama',
-    'peek',
-    'dist',
-    'cli.js',
+    '.bin',
+    process.platform === 'win32' ? 'peek.cmd' : 'peek',
   )
-  const version = run(process.execPath, [cli, '--version']).trim()
+  await access(bin)
+  const version = run(bin, ['--version']).trim()
   if (version !== packageJson.version) {
     throw new Error(`Packed CLI reported unexpected version: ${version}`)
   }
-  const help = run(process.execPath, [cli, '--help'])
+  const help = run(bin, ['--help'])
   if (!help.includes('peek')) {
     throw new Error('Packed CLI did not display help')
   }

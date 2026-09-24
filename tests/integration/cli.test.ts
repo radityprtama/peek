@@ -46,7 +46,7 @@ it('shows help without starting a tunnel', async () => {
 it('shows the package version', async () => {
   const result = await run(['--version'])
   expect(result.code).toBe(0)
-  expect(result.output).toContain('0.1.0')
+  expect(result.output).toContain('0.1.1')
 })
 
 it('supports the dev alias for help', async () => {

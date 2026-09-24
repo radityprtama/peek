@@ -60,42 +60,18 @@ private data unless its HTTP routes protect that data.
 
 Before tagging, update the package version and changelog together. Run all
 checks above, inspect `npm pack --dry-run`, and manually test one real Quick
-Tunnel. The `v<package version>` tag (for example `v0.1.0`) triggers
+Tunnel. The `v<package version>` tag (for example `v0.1.1`) triggers
 `.github/workflows/release.yml`, which rechecks the package and publishes to
 npm with provenance using GitHub OIDC. The package name is
 `@radityprtama/peek` and the intended repository is
 `radityprtama/peek`.
 
-Because npm requires a package to exist before trust can be configured, the
-owner must first publish a minimal prerelease under this name from an isolated
-directory. Do this only after confirming ownership of the npm scope and the
-release contents. For example, publish a small `0.0.0-bootstrap.0` package
-with no executable or dependencies under the `bootstrap` dist-tag. Keep the
-actual Peek source tree at `0.1.0` throughout. The bootstrap version exists
-only to establish package ownership and enable trusted publishing; `v0.1.0`
-will be published by the workflow and become the normal release.
+`0.1.0` is already published under this package name. npm will not replace a
+published version, so the next tag must be `v0.1.1`. Confirm that the version
+in `package.json` matches the tag and is absent from the registry before
+pushing it.
 
-```sh
-bootstrap_dir="$(mktemp -d)"
-cd "$bootstrap_dir"
-cat > package.json <<'JSON'
-{
-  "name": "@radityprtama/peek",
-  "version": "0.0.0-bootstrap.0",
-  "description": "Bootstrap for Peek's trusted npm publisher",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/radityprtama/peek.git"
-  }
-}
-JSON
-printf '%s\n' 'Peek bootstrap package. Install 0.1.0 when released.' > README.md
-npm pack --dry-run
-npm publish --access public --tag bootstrap
-```
-
-Then configure the npm trusted publisher for owner `radityprtama`, repository
+Configure the npm trusted publisher for owner `radityprtama`, repository
 `peek`, workflow filename `release.yml`, and **allow direct `npm publish`**.
 The CLI equivalent, using npm 11.15.0+ from an authenticated account with 2FA,
 is:
@@ -105,7 +81,7 @@ npm trust github @radityprtama/peek --repo radityprtama/peek --file release.yml 
 ```
 
 The GitHub repository must be public for npm provenance. Verify the trust
-entry before pushing the `v0.1.0` tag. See [npm's trusted publisher
+entry before pushing the `v0.1.1` tag. See [npm's trusted publisher
 instructions](https://docs.npmjs.com/trusted-publishers/) and the
 [npm trust command](https://docs.npmjs.com/cli/v11/commands/npm-trust).
 Do not store an npm token in GitHub Actions.
