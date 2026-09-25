@@ -60,7 +60,7 @@ private data unless its HTTP routes protect that data.
 
 Before tagging, update the package version and changelog together. Run all
 checks above, inspect `npm pack --dry-run`, and manually test one real Quick
-Tunnel. The `v<package version>` tag (for example `v0.1.1`) triggers
+Tunnel. The `v<package version>` tag triggers
 `.github/workflows/release.yml`, which rechecks the package and publishes to
 npm with provenance using GitHub OIDC. The package name is
 `@radityprtama/peek` and the intended repository is
