@@ -60,16 +60,15 @@ private data unless its HTTP routes protect that data.
 
 Before tagging, update the package version and changelog together. Run all
 checks above, inspect `npm pack --dry-run`, and manually test one real Quick
-Tunnel. The `v<package version>` tag (for example `v0.1.1`) triggers
+Tunnel. The `v<package version>` tag triggers
 `.github/workflows/release.yml`, which rechecks the package and publishes to
 npm with provenance using GitHub OIDC. The package name is
 `@radityprtama/peek` and the intended repository is
 `radityprtama/peek`.
 
-`0.1.0` is already published under this package name. npm will not replace a
-published version, so the next tag must be `v0.1.1`. Confirm that the version
-in `package.json` matches the tag and is absent from the registry before
-pushing it.
+`0.1.0` and `0.1.1` are already published under this package name. npm will
+not replace a published version. Confirm that the version in `package.json`
+matches the tag and is absent from the registry before pushing it.
 
 Configure the npm trusted publisher for owner `radityprtama`, repository
 `peek`, workflow filename `release.yml`, environment `Publish to npm`, and
@@ -83,7 +82,20 @@ npm trust github @radityprtama/peek --repo radityprtama/peek --file release.yml 
 ```
 
 The GitHub repository must be public for npm provenance. Verify the trust
-entry before pushing the `v0.1.1` tag. See [npm's trusted publisher
+entry before pushing a release tag. See [npm's trusted publisher
 instructions](https://docs.npmjs.com/trusted-publishers/) and the
 [npm trust command](https://docs.npmjs.com/cli/v11/commands/npm-trust).
 Do not store an npm token in GitHub Actions.
+
+## Repository rules
+
+The `main` branch is protected by the active **Protect main** ruleset. Changes
+go through pull requests, all six CI matrix checks must pass, and review
+conversations must be resolved before merging. The rule applies to the
+maintainer as well as contributors. While Peek has one maintainer, it requires
+zero approving reviews; add a review requirement when another maintainer can
+review changes. GitHub deletes merged branches automatically.
+
+The active **Protect release tags** ruleset lets maintainers create new `v*`
+tags but prevents moving or deleting existing ones. Create each release tag
+from the verified `main` commit after completing the release checks above.
