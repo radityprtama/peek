@@ -34,8 +34,8 @@ importers:
         specifier: ^2.5.14
         version: 2.5.14
       '@types/node':
-        specifier: ^22.20.4
-        version: 22.20.4
+        specifier: ^26.6.2
+        version: 26.6.2
       '@types/qrcode-terminal':
         specifier: ^0.12.2
         version: 0.12.2
@@ -47,7 +47,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: ^5.0.1
-        version: 5.0.1(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4))
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2))
 
 packages:
 
@@ -239,8 +239,8 @@ packages:
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
-  '@types/node@22.20.4':
-    resolution: {integrity: sha512-zJRE40jpHtKqE/C4fgHrAKQLJuSpzEnP9ff9Y7YtoR3Wd2pwqzlekDeEuUQXjRd+QCYnVnNwuJYmhdk9XV8gvA==}
+  '@types/node@26.6.2':
+    resolution: {integrity: sha512-X1P21scMv4zGKLYqjdGjaKa7COa0RKVYYZZN/NfvLQ1JegxFhdhpZG/Lyn8AXx6CDUavKAd11v6BvfpkDByK8g==}
 
   '@types/qrcode-terminal@0.12.2':
     resolution: {integrity: sha512-v+RcIEJ+Uhd6ygSQ0u5YYY7ZM+la7GgPbs0V/7l/kFs2uO4S8BcIUEMoP7za4DNIqNnUD5npf0A/7kBhrCKG5Q==}
@@ -856,8 +856,8 @@ packages:
   unconfig-core@7.5.0:
     resolution: {integrity: sha512-Su3FauozOGP44ZmKdHy2oE6LPjk51M/TRRjHv2HNCWiDvfvCoxC2lno6jevMA91MYAdCdwP05QnWdWpSbncX/w==}
 
-  undici-types@6.21.0:
-    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
+  undici-types@8.9.0:
+    resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
   unicorn-magic@0.3.0:
     resolution: {integrity: sha512-+QBBXBCvifc56fsbuxZQ6Sic3wqqc3WWaqxs58gvJrcOuN83HGTCwz3oS5phzU9LthRNE9VrJCFCLUgHeeFnfA==}
@@ -1086,9 +1086,9 @@ snapshots:
 
   '@types/estree@1.0.9': {}
 
-  '@types/node@22.20.4':
+  '@types/node@26.6.2':
     dependencies:
-      undici-types: 6.21.0
+      undici-types: 8.9.0
 
   '@types/qrcode-terminal@0.12.2': {}
 
@@ -1152,14 +1152,14 @@ snapshots:
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
-  '@vitest/mocker@5.0.1(vite@8.3.0(@types/node@22.20.4))':
+  '@vitest/mocker@5.0.1(vite@8.3.0(@types/node@26.6.2))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.1
       estree-walker: 3.0.3
       magic-string: 1.4.2
     optionalDependencies:
-      vite: 8.3.0(@types/node@22.20.4)
+      vite: 8.3.0(@types/node@26.6.2)
 
   '@vitest/spy@5.0.1': {}
 
@@ -1513,13 +1513,13 @@ snapshots:
       '@quansync/fs': 1.1.0
       quansync: 1.0.0
 
-  undici-types@6.21.0: {}
+  undici-types@8.9.0: {}
 
   unicorn-magic@0.3.0: {}
 
   verkit@0.4.1: {}
 
-  vite@8.3.0(@types/node@22.20.4):
+  vite@8.3.0(@types/node@26.6.2):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -1527,13 +1527,13 @@ snapshots:
       rolldown: 1.2.9
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 22.20.4
+      '@types/node': 26.6.2
       fsevents: 2.3.3
 
-  vitest@5.0.1(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)):
+  vitest@5.0.1(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.1(vite@8.3.0(@types/node@22.20.4))
+      '@vitest/mocker': 5.0.1(vite@8.3.0(@types/node@26.6.2))
       chai: 6.2.2
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -1544,10 +1544,10 @@ snapshots:
       tinybench: 6.1.4
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
-      vite: 8.3.0(@types/node@22.20.4)
+      vite: 8.3.0(@types/node@26.6.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 22.20.4
+      '@types/node': 26.6.2
     transitivePeerDependencies:
       - msw
 
