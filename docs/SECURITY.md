@@ -57,7 +57,7 @@ manager.
 
 ## Reporting vulnerabilities
 
-Use the repository's private GitHub vulnerability reporting channel if it is
-enabled. Otherwise contact the repository owner privately through GitHub
-before posting exploit details in a public issue. Include the Peek version,
+Use the repository's [private GitHub vulnerability reporting
+channel](https://github.com/radityprtama/peek/security/advisories/new). Do not
+post exploit details in a public issue or discussion. Include the Peek version,
 platform, impact, and reproduction steps without sharing real secrets.

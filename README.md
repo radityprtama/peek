@@ -104,6 +104,17 @@ for local linking and release checks, and
 [troubleshooting](https://github.com/radityprtama/peek/blob/main/docs/TROUBLESHOOTING.md)
 if startup fails.
 
+## Contributing and support
+
+Contributions are welcome. Read the [contributing guide](CONTRIBUTING.md) and
+[Code of Conduct](CODE_OF_CONDUCT.md) before opening a pull request. Use
+[issues](https://github.com/radityprtama/peek/issues)
+for reproducible bugs and focused feature requests, and
+[Discussions](https://github.com/radityprtama/peek/discussions) for questions
+and early ideas. For help, see the [support guide](.github/SUPPORT.md).
+Report vulnerabilities through [private vulnerability
+reporting](https://github.com/radityprtama/peek/security/advisories/new).
+
 ## Roadmap and license
 
 v0.1 focuses on automatic server discovery, one temporary Cloudflare tunnel,

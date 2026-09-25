@@ -1,0 +1,29 @@
+name: Feature request
+description: Propose a focused improvement to Peek
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check the roadmap and existing issues first. For early ideas or usage questions, use Discussions.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the use case and who encounters it.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain what Peek should do, including CLI behavior if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Optional workarounds or other approaches.
+    validations:
+      required: false

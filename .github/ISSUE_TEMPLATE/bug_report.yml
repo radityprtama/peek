@@ -1,0 +1,51 @@
+name: Bug report
+description: Report a reproducible problem with Peek
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Do not include credentials, private URLs, or sensitive project data. Report security vulnerabilities privately through the Security tab.
+  - type: input
+    id: version
+    attributes:
+      label: Peek version
+      description: Run `peek --version`.
+      placeholder: 0.1.1
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, Node.js version, and package manager.
+      placeholder: Ubuntu 24.04, Node.js 22, pnpm 11
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include a minimal project or command when possible.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output
+      description: Redact secrets, private URLs, and project data before pasting.
+      render: text
+    validations:
+      required: false
